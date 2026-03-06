@@ -106,7 +106,7 @@ sonarr:
         - name: recentTvPriority
           value: 1                           # -100=Default, -2=Paused, -1=Low, 0=Normal, 1=High, 2=Force
         - name: olderTvPriority
-          value: -100
+          value: 0
 
   # ──────────────────────────────────────────────
   # INDEXERS (POST to /api/v3/indexer)
