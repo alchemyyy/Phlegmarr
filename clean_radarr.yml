@@ -1,0 +1,8 @@
+radarr:
+  server:
+    base_url: !secret RADARR_BASE_URL
+    api_key: !secret RADARR_API_KEY
+    apiroot: /api/v3
+  purge:
+    - /qualityprofile
+    - /customformat

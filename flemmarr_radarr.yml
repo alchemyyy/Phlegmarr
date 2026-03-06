@@ -1,0 +1,222 @@
+radarr:
+  server:
+    base_url: !secret RADARR_BASE_URL
+    api_key: !secret RADARR_API_KEY
+    apiroot: /api/v3
+
+  # ──────────────────────────────────────────────
+  # CONFIG: settings applied via PUT to /api/v3/config/*
+  # ──────────────────────────────────────────────
+  config:
+
+    # --- Naming (toggles only — format strings handled by recyclarr) ---
+    naming:
+      renameMovies: true
+      replaceIllegalCharacters: true
+      colonReplacementFormat: delete       # delete, dash, spaceDash, spaceDashSpace, smart
+
+    # --- Media Management ---
+    mediamanagement:
+      autoUnmonitorPreviouslyDownloadedMovies: true
+      recycleBin: ""
+      recycleBinCleanupDays: 7
+      downloadPropersAndRepacks: doNotPrefer  # handled via custom formats in recyclarr
+      createEmptyMovieFolders: false
+      deleteEmptyFolders: true
+      fileDate: none
+      rescanAfterRefresh: always
+      autoRenameFolders: false
+      pathsDefaultStatic: false
+      setPermissionsLinux: false
+      chmodFolder: "755"
+      chownGroup: ""
+      skipFreeSpaceCheckWhenImporting: false
+      minimumFreeSpaceWhenImporting: 100
+      copyUsingHardlinks: true
+      useScriptImport: false
+      scriptImportPath: ""
+      importExtraFiles: false
+      extraFileExtensions: srt
+      enableMediaInfo: true
+
+    # --- General / Host ---
+    host:
+      bindAddress: "*"
+      port: 7878
+      sslPort: 9898
+      enableSsl: false
+      launchBrowser: false
+      authenticationMethod: forms
+      authenticationRequired: disabledForLocalAddresses
+      analyticsEnabled: false
+      logLevel: info
+      logSizeLimit: 1
+      branch: master
+      instanceName: Radarr
+      updateAutomatically: true
+      updateMechanism: builtIn
+      proxyEnabled: false
+      proxyType: http
+      proxyHostname: ""
+      proxyPort: 8080
+      proxyUsername: ""
+      proxyPassword: ""
+      proxyBypassFilter: ""
+      proxyBypassLocalAddresses: true
+      certificateValidation: enabled
+      backupFolder: Backups
+      backupInterval: 7
+      backupRetention: 28
+      trustCgnatIpAddresses: false
+
+  # ──────────────────────────────────────────────
+  # ROOT FOLDERS (POST to /api/v3/rootfolder)
+  # ──────────────────────────────────────────────
+  rootfolder:
+    - path: !secret ROOTFOLDER_AUTOMOVIES
+
+  # ──────────────────────────────────────────────
+  # DOWNLOAD CLIENTS (POST to /api/v3/downloadclient)
+  # ──────────────────────────────────────────────
+  downloadclient:
+    - name: SABnzbd
+      enable: true
+      protocol: usenet
+      priority: 1
+      removeCompletedDownloads: true
+      removeFailedDownloads: true
+      implementation: Sabnzbd
+      configContract: SabnzbdSettings
+      fields:
+        - name: host
+          value: !secret SABNZBD_ADDRESS
+        - name: port
+          value: !secret SABNZBD_PORT
+        - name: useSsl
+          value: false
+        - name: apiKey
+          value: !secret SABNZBD_API_KEY       # masked by Radarr API — fill in manually
+        - name: username
+          value: !secret SABNZBD_USERNAME
+        - name: password
+          value: !secret SABNZBD_PASSWORD       # masked by Radarr API — fill in manually
+        - name: movieCategory
+          value: movies
+        - name: recentMoviePriority
+          value: 1                           # -100=Default, -2=Paused, -1=Low, 0=Normal, 1=High, 2=Force
+        - name: olderMoviePriority
+          value: -100
+
+  # ──────────────────────────────────────────────
+  # INDEXERS (POST to /api/v3/indexer)
+  # ──────────────────────────────────────────────
+  indexer:
+    - name: NZBgeek (Prowlarr)
+      enableRss: true
+      enableAutomaticSearch: true
+      enableInteractiveSearch: true
+      protocol: usenet
+      priority: 15
+      downloadClientId: 0
+      implementation: Newznab
+      configContract: NewznabSettings
+      fields:
+        - name: baseUrl
+          value: "https://api.nzbgeek.info/"
+        - name: apiPath
+          value: /api
+        - name: apiKey
+          value: !secret NZBGEEK_API_KEY        # masked by Radarr API — fill in manually
+        - name: categories
+          value: [2000, 2010, 2020, 2030, 2040, 2045, 2050, 2060, 2070]
+      tags: []
+
+    - name: DrunkenSlug
+      enableRss: true
+      enableAutomaticSearch: true
+      enableInteractiveSearch: true
+      protocol: usenet
+      priority: 15
+      downloadClientId: 0
+      implementation: Newznab
+      configContract: NewznabSettings
+      fields:
+        - name: baseUrl
+          value: "https://drunkenslug.com"
+        - name: apiPath
+          value: /api
+        - name: apiKey
+          value: !secret DRUNKENSLUG_API_KEY    # masked by Radarr API — fill in manually
+        - name: categories
+          value: [2000, 2010, 2020, 2030, 2040, 2045, 2050, 2060, 2070]
+      tags: []
+
+    - name: NZBFinder
+      enableRss: true
+      enableAutomaticSearch: true
+      enableInteractiveSearch: true
+      protocol: usenet
+      priority: 20
+      downloadClientId: 0
+      implementation: Newznab
+      configContract: NewznabSettings
+      fields:
+        - name: baseUrl
+          value: "https://nzbfinder.ws/"
+        - name: apiPath
+          value: /api
+        - name: apiKey
+          value: !secret NZBFINDER_API_KEY      # masked by Radarr API — fill in manually
+        - name: categories
+          value: [2000, 2010, 2020, 2030, 2040, 2045, 2050, 2060, 2070]
+      tags: []
+
+  # ──────────────────────────────────────────────
+  # CONNECTIONS / NOTIFICATIONS (POST to /api/v3/notification)
+  # ──────────────────────────────────────────────
+  notification:
+    - name: Jellyfin Webhook
+      onGrab: false
+      onDownload: true
+      onUpgrade: true
+      onRename: false
+      onMovieAdded: false
+      onMovieDelete: false
+      onMovieFileDelete: true
+      onMovieFileDeleteForUpgrade: true
+      onHealthIssue: false
+      includeHealthWarnings: false
+      onHealthRestored: false
+      onApplicationUpdate: false
+      onManualInteractionRequired: false
+      implementation: Webhook
+      configContract: WebhookSettings
+      fields:
+        - name: url
+          value: !secret JELLYFIN_LIBRARY_SCANNER_BASE_URL
+        - name: method
+          value: 1                           # 1=POST, 2=PUT
+      tags: []
+
+    - name: ServarrForceImporter
+      onGrab: false
+      onDownload: false
+      onUpgrade: false
+      onRename: false
+      onMovieAdded: false
+      onMovieDelete: false
+      onMovieFileDelete: false
+      onMovieFileDeleteForUpgrade: false
+      onHealthIssue: false
+      includeHealthWarnings: false
+      onHealthRestored: false
+      onApplicationUpdate: false
+      onManualInteractionRequired: true
+      implementation: Webhook
+      configContract: WebhookSettings
+      fields:
+        - name: url
+          value: !secret SERVARR_FORCE_IMPORTER_BASE_URL
+        - name: method
+          value: 1                           # 1=POST, 2=PUT
+      tags: []

@@ -1,0 +1,8 @@
+# ignore for safety, refer to the example secrets file
+secrets.yml
+
+# ignore all folders
+/*/
+
+# ignore recyclarr generated files
+settings.yml

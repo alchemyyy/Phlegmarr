@@ -1,0 +1,204 @@
+sonarr:
+  server:
+    base_url: !secret SONARR_ANIME_BASE_URL
+    api_key: !secret SONARR_ANIME_API_KEY
+    apiroot: /api/v3
+
+  # ──────────────────────────────────────────────
+  # CONFIG: settings applied via PUT to /api/v3/config/*
+  # ──────────────────────────────────────────────
+  config:
+
+    # --- Naming (toggles only — format strings handled by recyclarr) ---
+    naming:
+      renameEpisodes: true
+      replaceIllegalCharacters: true
+      colonReplacementFormat: 4          # 0=delete, 1=dash, 2=spaceDash, 3=spaceDashSpace, 4=smart
+      customColonReplacementFormat: ""
+      multiEpisodeStyle: 5               # 0=extend, 5=prefixedRange, etc.
+
+    # --- Media Management ---
+    mediamanagement:
+      autoUnmonitorPreviouslyDownloadedEpisodes: true
+      recycleBin: ""
+      recycleBinCleanupDays: 7
+      downloadPropersAndRepacks: doNotPrefer  # handled via custom formats in recyclarr
+      createEmptySeriesFolders: false
+      deleteEmptyFolders: false
+      fileDate: none
+      rescanAfterRefresh: always
+      setPermissionsLinux: false
+      chmodFolder: "755"
+      chownGroup: ""
+      episodeTitleRequired: always
+      skipFreeSpaceCheckWhenImporting: false
+      minimumFreeSpaceWhenImporting: 100
+      copyUsingHardlinks: true
+      useScriptImport: false
+      scriptImportPath: ""
+      importExtraFiles: false
+      extraFileExtensions: srt
+      enableMediaInfo: true
+
+    # --- General / Host ---
+    host:
+      bindAddress: "*"
+      port: 8990
+      sslPort: 9898
+      enableSsl: false
+      launchBrowser: false
+      authenticationMethod: forms
+      authenticationRequired: disabledForLocalAddresses
+      analyticsEnabled: false
+      logLevel: info
+      logSizeLimit: 1
+      branch: develop
+      instanceName: Sonarr
+      updateAutomatically: true
+      updateMechanism: builtIn
+      proxyEnabled: false
+      proxyType: http
+      proxyHostname: ""
+      proxyPort: 8080
+      proxyUsername: ""
+      proxyPassword: ""
+      proxyBypassFilter: ""
+      proxyBypassLocalAddresses: true
+      certificateValidation: enabled
+      backupFolder: Backups
+      backupInterval: 7
+      backupRetention: 28
+      trustCgnatIpAddresses: false
+
+  # ──────────────────────────────────────────────
+  # ROOT FOLDERS (POST to /api/v3/rootfolder)
+  # ──────────────────────────────────────────────
+  rootfolder:
+    - path: !secret ROOTFOLDER_AUTOANIME
+
+  # ──────────────────────────────────────────────
+  # DOWNLOAD CLIENTS (POST to /api/v3/downloadclient)
+  # ──────────────────────────────────────────────
+  downloadclient:
+    - name: qBittorrent
+      enable: true
+      protocol: torrent
+      priority: 1
+      removeCompletedDownloads: true
+      removeFailedDownloads: true
+      implementation: QBittorrent
+      configContract: QBittorrentSettings
+      fields:
+        - name: host
+          value: !secret QBITTORRENT_ADDRESS
+        - name: port
+          value: !secret QBITTORRENT_PORT
+        - name: useSsl
+          value: false
+        - name: username
+          value: !secret QBITTORRENT_USERNAME
+        - name: password
+          value: !secret QBITTORRENT_PASSWORD   # masked by Sonarr API — fill in manually
+        - name: tvCategory
+          value: tv-sonarr
+        - name: recentTvPriority
+          value: 0                           # 0=Last, 1=First
+        - name: olderTvPriority
+          value: 0
+        - name: initialState
+          value: 0                           # 0=Started, 1=Force Started, 2=Stopped
+        - name: sequentialOrder
+          value: true
+        - name: firstAndLast
+          value: true
+        - name: contentLayout
+          value: 0                           # 0=Default, 1=Original, 2=Subfolder
+
+  # ──────────────────────────────────────────────
+  # INDEXERS — handled by Prowlarr sync (see prowlarr section below)
+  # Prowlarr will auto-sync Nyaa.si to this Sonarr instance
+  # via the SonarrAnime application + "anime" tag
+  # ──────────────────────────────────────────────
+
+  # ──────────────────────────────────────────────
+  # CONNECTIONS / NOTIFICATIONS (POST to /api/v3/notification)
+  # ──────────────────────────────────────────────
+  notification:
+    - name: Jellyfin Webhook
+      onGrab: true
+      onDownload: true
+      onUpgrade: true
+      onImportComplete: true
+      onRename: true
+      onSeriesAdd: true
+      onSeriesDelete: false
+      onEpisodeFileDelete: false
+      onEpisodeFileDeleteForUpgrade: true
+      onHealthIssue: false
+      includeHealthWarnings: false
+      onHealthRestored: false
+      onApplicationUpdate: false
+      onManualInteractionRequired: false
+      implementation: Webhook
+      configContract: WebhookSettings
+      fields:
+        - name: url
+          value: !secret JELLYFIN_LIBRARY_SCANNER_BASE_URL
+        - name: method
+          value: 1                           # 1=POST, 2=PUT
+      tags: []
+
+    - name: ServarrForceImporter
+      onGrab: false
+      onDownload: false
+      onUpgrade: false
+      onRename: false
+      onMovieAdded: false
+      onMovieDelete: false
+      onMovieFileDelete: false
+      onMovieFileDeleteForUpgrade: false
+      onHealthIssue: false
+      includeHealthWarnings: false
+      onHealthRestored: false
+      onApplicationUpdate: false
+      onManualInteractionRequired: true
+      implementation: Webhook
+      configContract: WebhookSettings
+      fields:
+        - name: url
+          value: !secret SERVARR_FORCE_IMPORTER_BASE_URL
+        - name: method
+          value: 1                           # 1=POST, 2=PUT
+      tags: []
+      
+# ════════════════════════════════════════════════
+# PROWLARR: ensure SonarrAnime application exists
+# so Nyaa.si (tagged "anime") auto-syncs to this Sonarr instance
+# ════════════════════════════════════════════════
+prowlarr:
+  server:
+    base_url: !secret PROWLARR_BASE_URL
+    api_key: !secret PROWLARR_API_KEY
+    apiroot: /api/v1
+
+  applications:
+    - name: SonarrAnime
+      syncLevel: fullSync
+      implementation: Sonarr
+      configContract: SonarrSettings
+      fields:
+        - name: prowlarrUrl
+          value: !secret PROWLARR_BASE_URL
+        - name: baseUrl
+          value: !secret SONARR_ANIME_BASE_URL
+        - name: apiKey
+          value: !secret SONARR_ANIME_API_KEY
+        - name: syncCategories
+          value: [5070]
+        - name: animeSyncCategories
+          value: [5070]
+        - name: syncAnimeStandardFormatSearch
+          value: true
+        - name: syncRejectBlocklistedTorrentHashesWhileGrabbing
+          value: true
+      tags: [3]                              # tag 3 = "anime" — matches Nyaa.si's tag

@@ -1,0 +1,240 @@
+sonarr:
+  server:
+    base_url: !secret SONARR_BASE_URL
+    api_key: !secret SONARR_API_KEY
+    apiroot: /api/v3
+
+  # ──────────────────────────────────────────────
+  # CONFIG: settings applied via PUT to /api/v3/config/*
+  # ──────────────────────────────────────────────
+  config:
+
+    # --- Naming (toggles only — format strings handled by recyclarr) ---
+    naming:
+      renameEpisodes: true
+      replaceIllegalCharacters: true
+      colonReplacementFormat: 4          # 0=delete, 1=dash, 2=spaceDash, 3=spaceDashSpace, 4=smart
+      customColonReplacementFormat: ""
+      multiEpisodeStyle: 5               # 0=extend, 5=prefixedRange, etc.
+
+    # --- Media Management ---
+    mediamanagement:
+      autoUnmonitorPreviouslyDownloadedEpisodes: true
+      recycleBin: ""
+      recycleBinCleanupDays: 7
+      downloadPropersAndRepacks: doNotPrefer  # handled via custom formats in recyclarr
+      createEmptySeriesFolders: false
+      deleteEmptyFolders: true
+      fileDate: none
+      rescanAfterRefresh: always
+      setPermissionsLinux: false
+      chmodFolder: "755"
+      chownGroup: ""
+      episodeTitleRequired: always
+      skipFreeSpaceCheckWhenImporting: false
+      minimumFreeSpaceWhenImporting: 100
+      copyUsingHardlinks: true
+      useScriptImport: false
+      scriptImportPath: ""
+      importExtraFiles: false
+      extraFileExtensions: srt
+      enableMediaInfo: true
+
+    # --- General / Host ---
+    host:
+      bindAddress: "*"
+      port: 8989
+      sslPort: 9898
+      enableSsl: false
+      launchBrowser: false
+      authenticationMethod: forms
+      authenticationRequired: disabledForLocalAddresses
+      analyticsEnabled: false
+      logLevel: info
+      logSizeLimit: 1
+      branch: main
+      instanceName: Sonarr
+      updateAutomatically: true
+      updateMechanism: builtIn
+      proxyEnabled: false
+      proxyType: http
+      proxyHostname: ""
+      proxyPort: 8080
+      proxyUsername: ""
+      proxyPassword: ""
+      proxyBypassFilter: ""
+      proxyBypassLocalAddresses: true
+      certificateValidation: enabled
+      backupFolder: Backups
+      backupInterval: 7
+      backupRetention: 28
+      trustCgnatIpAddresses: false
+
+  # ──────────────────────────────────────────────
+  # ROOT FOLDERS (POST to /api/v3/rootfolder)
+  # ──────────────────────────────────────────────
+  rootfolder:
+    - path: !secret ROOTFOLDER_AUTOTELEVISION
+
+  # ──────────────────────────────────────────────
+  # DOWNLOAD CLIENTS (POST to /api/v3/downloadclient)
+  # ──────────────────────────────────────────────
+  downloadclient:
+    - name: SABnzbd
+      enable: true
+      protocol: usenet
+      priority: 1
+      removeCompletedDownloads: true
+      removeFailedDownloads: true
+      implementation: Sabnzbd
+      configContract: SabnzbdSettings
+      fields:
+        - name: host
+          value: !secret SABNZBD_ADDRESS
+        - name: port
+          value: !secret SABNZBD_PORT
+        - name: useSsl
+          value: false
+        - name: apiKey
+          value: !secret SABNZBD_API_KEY       # masked by Sonarr API — fill in manually
+        - name: username
+          value: !secret SABNZBD_USERNAME
+        - name: password
+          value: !secret SABNZBD_PASSWORD       # masked by Sonarr API — fill in manually
+        - name: tvCategory
+          value: tv
+        - name: recentTvPriority
+          value: 1                           # -100=Default, -2=Paused, -1=Low, 0=Normal, 1=High, 2=Force
+        - name: olderTvPriority
+          value: -100
+
+  # ──────────────────────────────────────────────
+  # INDEXERS (POST to /api/v3/indexer)
+  # ──────────────────────────────────────────────
+  indexer:
+    - name: NZBgeek
+      enableRss: true
+      enableAutomaticSearch: true
+      enableInteractiveSearch: true
+      protocol: usenet
+      priority: 15
+      seasonSearchMaximumSingleEpisodeAge: 0
+      downloadClientId: 0
+      implementation: Newznab
+      configContract: NewznabSettings
+      fields:
+        - name: baseUrl
+          value: "https://api.nzbgeek.info/"
+        - name: apiPath
+          value: /api
+        - name: apiKey
+          value: !secret NZBGEEK_API_KEY        # masked by Sonarr API — fill in manually
+        - name: categories
+          value: [5000, 5020, 5030, 5040, 5045, 5050]
+        - name: animeCategories
+          value: []
+        - name: animeStandardFormatSearch
+          value: false
+      tags: []
+
+    - name: DrunkenSlug
+      enableRss: true
+      enableAutomaticSearch: true
+      enableInteractiveSearch: true
+      protocol: usenet
+      priority: 15
+      seasonSearchMaximumSingleEpisodeAge: 0
+      downloadClientId: 0
+      implementation: Newznab
+      configContract: NewznabSettings
+      fields:
+        - name: baseUrl
+          value: "https://drunkenslug.com"
+        - name: apiPath
+          value: /api
+        - name: apiKey
+          value: !secret DRUNKENSLUG_API_KEY    # masked by Sonarr API — fill in manually
+        - name: categories
+          value: [5000, 5020, 5030, 5040, 5045, 5050]
+        - name: animeCategories
+          value: []
+        - name: animeStandardFormatSearch
+          value: false
+      tags: []
+
+    - name: NZBFinder
+      enableRss: true
+      enableAutomaticSearch: true
+      enableInteractiveSearch: true
+      protocol: usenet
+      priority: 20
+      seasonSearchMaximumSingleEpisodeAge: 0
+      downloadClientId: 0
+      implementation: Newznab
+      configContract: NewznabSettings
+      fields:
+        - name: baseUrl
+          value: "https://nzbfinder.ws/"
+        - name: apiPath
+          value: /api
+        - name: apiKey
+          value: !secret NZBFINDER_API_KEY      # masked by Sonarr API — fill in manually
+        - name: categories
+          value: [5000, 5020, 5030, 5040, 5045, 5050]
+        - name: animeCategories
+          value: []
+        - name: animeStandardFormatSearch
+          value: false
+      tags: []
+
+  # ──────────────────────────────────────────────
+  # CONNECTIONS / NOTIFICATIONS (POST to /api/v3/notification)
+  # ──────────────────────────────────────────────
+  notification:
+    - name: Jellyfin Webhook
+      onGrab: false
+      onDownload: false
+      onUpgrade: false
+      onImportComplete: true
+      onRename: false
+      onSeriesAdd: false
+      onSeriesDelete: false
+      onEpisodeFileDelete: false
+      onEpisodeFileDeleteForUpgrade: true
+      onHealthIssue: false
+      includeHealthWarnings: false
+      onHealthRestored: false
+      onApplicationUpdate: false
+      onManualInteractionRequired: false
+      implementation: Webhook
+      configContract: WebhookSettings
+      fields:
+        - name: url
+          value: !secret JELLYFIN_LIBRARY_SCANNER_BASE_URL
+        - name: method
+          value: 1                           # 1=POST, 2=PUT
+      tags: []
+
+    - name: ServarrForceImporter
+      onGrab: false
+      onDownload: false
+      onUpgrade: false
+      onImportComplete: false
+      onRename: false
+      onSeriesAdd: false
+      onSeriesDelete: false
+      onEpisodeFileDelete: false
+      onEpisodeFileDeleteForUpgrade: false
+      onHealthIssue: false
+      includeHealthWarnings: false
+      onHealthRestored: false
+      onApplicationUpdate: false
+      onManualInteractionRequired: true
+      implementation: Webhook
+      configContract: WebhookSettings
+      fields:
+        - name: url
+          value: !secret SERVARR_FORCE_IMPORTER_BASE_URL
+        - name: method
+          value: 1                           # 1=POST, 2=PUT
+      tags: []

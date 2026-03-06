@@ -1,0 +1,8 @@
+sonarr:
+  server:
+    base_url: !secret SONARR_ANIME_BASE_URL
+    api_key: !secret SONARR_ANIME_API_KEY
+    apiroot: /api/v3
+  purge:
+    - /qualityprofile
+    - /customformat

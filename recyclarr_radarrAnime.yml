@@ -1,0 +1,370 @@
+radarr:
+  radarr:
+    base_url: !secret RADARR_ANIME_BASE_URL
+    api_key: !secret RADARR_ANIME_API_KEY
+
+    # ── Media Naming (TRaSH recommended) ──────────────────────────────
+    media_naming:
+      folder: default
+      movie:
+        rename: true
+        standard: jellyfin-anime-tmdb
+
+    # ── Quality Definition ────────────────────────────────────────────
+    quality_definition:
+      type: movie
+
+    # ── Quality Profiles ──────────────────────────────────────────────
+    quality_profiles:
+      - name: REMUX
+        upgrade:
+          allowed: true
+          until_quality: Remux-2160p
+          until_score: 10000
+        min_format_score: 100
+        quality_sort: top
+        reset_unmatched_scores:
+          enabled: true
+        qualities:
+          - name: Remux-2160p
+          - name: Remux-1080p
+          - name: Bluray-2160p
+          - name: WEB 2160p
+            qualities:
+              - WEBDL-2160p
+              - WEBRip-2160p
+          - name: HDTV-2160p
+          - name: Bluray-1080p
+          - name: WEB 1080p
+            qualities:
+              - HDTV-1080p
+              - WEBDL-1080p
+              - WEBRip-1080p
+          - name: Bluray-720p
+          - name: WEB 720p
+            qualities:
+              - HDTV-720p
+              - WEBDL-720p
+              - WEBRip-720p
+          - name: Bluray-576p
+          - name: Bluray-480p
+          - name: WEB 480p
+            qualities:
+              - WEBDL-480p
+              - WEBRip-480p
+          - name: DVD
+          - name: DVD-R
+          - name: SDTV
+          - name: DVDSCR
+          - name: REGIONAL
+          - name: TELECINE
+          - name: TELESYNC
+          - name: CAM
+          - name: WORKPRINT
+
+      - name: WEBDL
+        upgrade:
+          allowed: true
+          until_quality: WEB 2160p
+          until_score: 10000
+        min_format_score: 100
+        quality_sort: top
+        reset_unmatched_scores:
+          enabled: true
+        qualities:
+          - name: WEB 2160p
+            qualities:
+              - WEBDL-2160p
+              - WEBRip-2160p
+          - name: HDTV-2160p
+          - name: WEB 1080p
+            qualities:
+              - HDTV-1080p
+              - WEBDL-1080p
+              - WEBRip-1080p
+          - name: WEB 720p
+            qualities:
+              - HDTV-720p
+              - WEBDL-720p
+              - WEBRip-720p
+          - name: WEB 480p
+            qualities:
+              - WEBDL-480p
+              - WEBRip-480p
+          - name: Remux-2160p
+          - name: Remux-1080p
+          - name: Bluray-2160p
+          - name: Bluray-1080p
+          - name: Bluray-720p
+          - name: Bluray-576p
+          - name: Bluray-480p
+          - name: DVD
+          - name: DVD-R
+          - name: SDTV
+          - name: DVDSCR
+          - name: REGIONAL
+          - name: TELECINE
+          - name: TELESYNC
+          - name: CAM
+          - name: WORKPRINT
+
+
+    # ── Custom Formats ────────────────────────────────────────────────
+    delete_old_custom_formats: true
+
+    custom_formats:
+
+      # ━━ Anime BD Tiers (SeaDex) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - trash_ids:
+          - fb3ccc5d5cc8f77c9055d4cb4561dded # Anime BD Tier 01
+        assign_scores_to:
+          - name: REMUX
+            score: 1400
+          - name: WEBDL
+            score: 1400
+
+      - trash_ids:
+          - 66926c8fa9312bc74ab71bf69aae4f4a # Anime BD Tier 02
+        assign_scores_to:
+          - name: REMUX
+            score: 1300
+          - name: WEBDL
+            score: 1300
+
+      - trash_ids:
+          - fa857662bad28d5ff21a6e611869a0ff # Anime BD Tier 03
+        assign_scores_to:
+          - name: REMUX
+            score: 1200
+          - name: WEBDL
+            score: 1200
+
+      - trash_ids:
+          - f262f1299d99b1a2263375e8fa2ddbb3 # Anime BD Tier 04
+        assign_scores_to:
+          - name: REMUX
+            score: 1100
+          - name: WEBDL
+            score: 1100
+
+      - trash_ids:
+          - ca864ed93c7b431150cc6748dc34875d # Anime BD Tier 05
+        assign_scores_to:
+          - name: REMUX
+            score: 1000
+          - name: WEBDL
+            score: 1000
+
+      - trash_ids:
+          - 9dce189b960fddf47891b7484ee886ca # Anime BD Tier 06
+        assign_scores_to:
+          - name: REMUX
+            score: 900
+          - name: WEBDL
+            score: 900
+
+      - trash_ids:
+          - 1ef101b3a82646b40e0cab7fc92cd896 # Anime BD Tier 07
+        assign_scores_to:
+          - name: REMUX
+            score: 800
+          - name: WEBDL
+            score: 800
+
+      - trash_ids:
+          - 6115ccd6640b978234cc47f2c1f2cadc # Anime BD Tier 08
+        assign_scores_to:
+          - name: REMUX
+            score: 700
+          - name: WEBDL
+            score: 700
+
+
+      # ━━ Anime WEB Tiers ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - trash_ids:
+          - 8167cffba4febfb9a6988ef24f274e7e # Anime Web Tier 01
+        assign_scores_to:
+          - name: REMUX
+            score: 600
+          - name: WEBDL
+            score: 600
+
+      - trash_ids:
+          - 8526c54e36b4962d340fce52ef030e76 # Anime Web Tier 02
+        assign_scores_to:
+          - name: REMUX
+            score: 500
+          - name: WEBDL
+            score: 500
+
+      - trash_ids:
+          - de41e72708d2c856fa261094c85e965d # Anime Web Tier 03
+        assign_scores_to:
+          - name: REMUX
+            score: 400
+          - name: WEBDL
+            score: 400
+
+      - trash_ids:
+          - 9edaeee9ea3bcd585da9b7c0ac3fc54f # Anime Web Tier 04
+        assign_scores_to:
+          - name: REMUX
+            score: 300
+          - name: WEBDL
+            score: 300
+
+      - trash_ids:
+          - 22d953bbe897857b517928f3652b8dd3 # Anime Web Tier 05
+        assign_scores_to:
+          - name: REMUX
+            score: 200
+          - name: WEBDL
+            score: 200
+
+      - trash_ids:
+          - a786fbc0eae05afe3bb51aee3c83a9d4 # Anime Web Tier 06
+        assign_scores_to:
+          - name: REMUX
+            score: 100
+          - name: WEBDL
+            score: 100
+
+
+      # ━━ Remux Tiers (anime-radarr scores) ━━━━━━━━━━━━━━━━━━━━━━━━━
+      - trash_ids:
+          - 3a3ff47579026e76d6504ebea39390de # Remux Tier 01
+        assign_scores_to:
+          - name: REMUX
+            score: 975
+          - name: WEBDL
+            score: 975
+
+      - trash_ids:
+          - 9f98181fe5a3fbeb0cc29340da2a468a # Remux Tier 02
+        assign_scores_to:
+          - name: REMUX
+            score: 950
+          - name: WEBDL
+            score: 950
+
+      - trash_ids:
+          - 8baaf0b3142bf4d94c42a724f034e27a # Remux Tier 03
+        assign_scores_to:
+          - name: REMUX
+            score: 925
+          - name: WEBDL
+            score: 925
+
+
+      # ━━ Unwanted ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - trash_ids:
+          - 06b6542a47037d1e33b15aa3677c2365 # Anime Raws
+          - b0fdc5897f68c9a68c70c25169f77447 # Anime LQ Groups
+          - b23eae459cc960816f2d6ba84af45055 # Dubs Only
+          - cae4ca30163749b891686f95532519bd # AV1
+          - 9172b2f683f6223e3a1846427b417a3d # VOSTFR
+        assign_scores_to:
+          - name: REMUX
+            score: -10000
+          - name: WEBDL
+            score: -10000
+
+
+      # ━━ Versions ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - trash_ids:
+          - c259005cbaeb5ab44c06eddb4751e70c # v0
+        assign_scores_to:
+          - name: REMUX
+            score: -51
+          - name: WEBDL
+            score: -51
+
+      - trash_ids:
+          - 5f400539421b8fcf71d51e6384434573 # v1
+        assign_scores_to:
+          - name: REMUX
+            score: 1
+          - name: WEBDL
+            score: 1
+
+      - trash_ids:
+          - 3df5e6dfef4b09bb6002f732bed5b774 # v2
+        assign_scores_to:
+          - name: REMUX
+            score: 2
+          - name: WEBDL
+            score: 2
+
+      - trash_ids:
+          - db92c27ba606996b146b57fbe6d09186 # v3
+        assign_scores_to:
+          - name: REMUX
+            score: 3
+          - name: WEBDL
+            score: 3
+
+      - trash_ids:
+          - d4e5e842fad129a3c097bdb2d20d31a0 # v4
+        assign_scores_to:
+          - name: REMUX
+            score: 4
+          - name: WEBDL
+            score: 4
+
+
+      # ━━ Repacks / Propers (anime-radarr scores) ━━━━━━━━━━━━━━━━━━━
+      - trash_ids:
+          - e7718d7a3ce595f289bfee26adc178f5 # Repack/Proper
+        assign_scores_to:
+          - name: REMUX
+            score: 1
+          - name: WEBDL
+            score: 1
+
+      - trash_ids:
+          - ae43b294509409a6a13919dedd4764c4 # Repack2
+        assign_scores_to:
+          - name: REMUX
+            score: 2
+          - name: WEBDL
+            score: 2
+
+      - trash_ids:
+          - 5caaaa1c08c1742aa4342d8c4cc463f2 # Repack3
+        assign_scores_to:
+          - name: REMUX
+            score: 3
+          - name: WEBDL
+            score: 3
+
+
+      # ━━ Streaming Services ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - trash_ids:
+          - 60f6d50cbd3cfc3e9a8c00e3a30c3114 # VRV
+        assign_scores_to:
+          - name: REMUX
+            score: 10
+          - name: WEBDL
+            score: 10
+
+
+      # ━━ Optional (score 0 by default — adjust to preference) ━━━━━━
+      - trash_ids:
+          - 4a3b087eea2ce012fcc1ce319259a3be # Anime Dual Audio
+        assign_scores_to:
+          - name: REMUX
+            score: 2000
+          - name: WEBDL
+            score: 2000
+
+      - trash_ids:
+          - 064af5f084a0a24458cc8ecd3220f93f # Uncensored
+        assign_scores_to:
+          - name: REMUX
+          - name: WEBDL
+
+      - trash_ids:
+          - a5d148168c4506b55cf53984107c396e # 10bit
+        assign_scores_to:
+          - name: REMUX
+          - name: WEBDL
