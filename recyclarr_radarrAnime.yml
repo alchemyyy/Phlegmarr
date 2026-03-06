@@ -12,7 +12,7 @@ radarr:
 
     # ── Quality Definition ────────────────────────────────────────────
     quality_definition:
-      type: movie
+      type: anime
 
     # ── Quality Profiles ──────────────────────────────────────────────
     quality_profiles:
